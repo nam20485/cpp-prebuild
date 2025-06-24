@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/cpp:1.5.1-9.0-bookworm-slim
+#FROM mcr.microsoft.com/devcontainers/cpp:1.5.1-9.0-bookworm-slim
 FROM mcr.microsoft.com/devcontainers/cpp:1.2.11-noble
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
