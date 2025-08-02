@@ -1,5 +1,4 @@
-#FROM mcr.microsoft.com/devcontainers/cpp:1.5.1-9.0-bookworm-slim
-FROM mcr.microsoft.com/devcontainers/cpp:1.2.11-noble
+FROM mcr.microsoft.com/devcontainers/cpp:1.2.13-ubuntu24.04
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN export DEBIAN_FRONTEND=noninteractive
@@ -15,6 +14,7 @@ RUN apt-get update -y && \
         software-properties-common \
         ninja-build \ 
         ccache && \
+        python3 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -30,11 +30,6 @@ RUN apt-get update \
         m4 \
         autoconf-archive \
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-
-
-# Add .NET global tools path
-#ENV PATH=$PATH:/home/vscode/.dotnet:/home/vscode/.dotnet/tools
 
 #RUN apt-get install -y -q --no-install-recommends python3
 
@@ -69,20 +64,14 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
 	&& apt-get install gh -y -q --no-install-recommends
 
 # # terraform
-# RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
-#     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
-#     apt-get update && \
-#     apt-get install -y -q --no-install-recommends \
-#         terraform
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+        terraform
 
-# terraform CDK for C#
-# RUN npm install --global cdktf-cli@0.21.0
-
-# # check CLI commands working
-# RUN npm --version && \
-#     node --version && \
-#     gh --version && \
-#     gcloud --version && \
-#     firebase --version && \
-#     terraform --version && \
-#     cdktf --version
+# check CLI commands working
+RUN npm --version && \
+    node --version && \
+    gh --version && \
+    terraform --version 
